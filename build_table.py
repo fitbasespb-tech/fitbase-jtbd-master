@@ -51,7 +51,9 @@ SEGMENT_HINTS = {
     "switch_tables/switch_tables_studio_mobi_competitor": {"S": "S1", "J": "J1", "label": "Танцевальная студия — Mobi-конкурент"},
     "unmanned/speaker_a_unmanned": {"S": "S5", "J": "J1", "label": "Speaker A — зал без персонала"},
     "unmanned/speaker_a_unmanned_full": {"S": "S5", "J": "J1", "label": "Speaker A — зал без персонала (расширенный, 8 джобов)"},
+    "unmanned/kochkin_unmanned": {"S": "S5", "J": "J3", "label": "Алексей Кочкин — зал без персонала (Екатеринбург, открытие)"},
     "network/stretch_house_stas": {"S": "S4", "J": "J4", "label": "Стас — Stretch House (франшиза, 65 студий)"},
+    "network/urbanfit_full": {"S": "S3", "J": "J4", "label": "Urban Fit — сеть рекуррентов (Жан + Евгений, 12 клубов СПб)"},
 }
 
 # Финальный порядок: Размер → Сегмент → Хочу (название) → контекст и далее.
@@ -576,20 +578,12 @@ def main():
         md_counts[str(p.relative_to(BASE_ROOT))] = len(recs)
         print(f"[MD-jtbd] {p.name}: {len(recs)} джобов")
 
-    # 6. Narrative MD — UrbanFit, Kochkin, SpeakerA Analysis (одна строка-плейсхолдер)
+    # 6. Narrative MD (только сводные/аналитические — оставлены как ссылка-плейсхолдер).
+    # UrbanFit и Kochkin теперь имеют полные структурированные CSV выше, плейсхолдеры убраны.
     narrative_sources = [
-        (BASE_KNOWLEDGE / "Interviews/Network/UrbanFit/urbanfit_jtbd.md", "S3", "J4",
-         "Urban Fit — сеть, рекуррент (действующий клиент)",
-         "Narrative JTBD-анализ. Big Job + 5 Core Jobs + Small Jobs описаны прозой. Требует ручной нормализации в табличный формат."),
         (BASE_KNOWLEDGE / "Interviews/Network/UrbanFit_Network_Analysis.md", "S3", "J4",
          "Urban Fit — сетевой анализ",
-         "Аналитическая записка по сегменту, не структурированный JTBD."),
-        (BASE_KNOWLEDGE / "Interviews/Unmanned/Kochkin_Unmanned_Analysis.md", "S5", "J1",
-         "Кочкин — зал без персонала (аналитика)",
-         "Аналитическая записка. Возможно дублирует speaker_a_unmanned, проверить."),
-        (BASE_KNOWLEDGE / "Interviews/Unmanned/SpeakerA_Unmanned_Analysis.md", "S5", "J1",
-         "Speaker A — зал без персонала (аналитика)",
-         "Аналитическая записка. Дублирует speaker_a_unmanned/jobs.csv — структурированные джобы там."),
+         "Аналитическая записка по сегменту, не структурированный JTBD. См. также полный CSV urbanfit_full."),
         (BASE_KNOWLEDGE / "Interviews/sales_calls_1c_switch/JTBD_summary_1c_segment.md", "?", "?",
          "Сводный JTBD по сегменту 1С (5 интервью + Каталина)",
          "Сводный документ по сегменту. Джобы выведены из 5 файлов sales_calls_1c_switch/, которые уже разобраны."),

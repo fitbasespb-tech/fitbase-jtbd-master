@@ -1,6 +1,6 @@
 # Отчёт верификации сборки таблицы джобов
 
-**Итого джобов в финальной таблице:** 309
+**Итого джобов в финальной таблице:** 330
 
 ## Источники
 
@@ -12,6 +12,7 @@
 | `segments/network/dmitry_network_no_admins/jobs.csv` | 8 |
 | `segments/network/dmitry_network_transcript/jobs.csv` | 8 |
 | `segments/network/stretch_house_stas/jobs.csv` | 17 |
+| `segments/network/urbanfit_full/jobs.csv` | 13 |
 | `segments/opening/opening_studio/jobs.csv` | 11 |
 | `segments/switch_other_systems/oksana_two_studios_appevent/jobs.csv` | 9 |
 | `segments/switch_other_systems/switch_club_from_1c/jobs.csv` | 9 |
@@ -27,6 +28,7 @@
 | `segments/switch_other_systems/switch_zenfitness_kraft_yc/jobs.csv` | 7 |
 | `segments/switch_tables/switch_tables_lime_fitness/jobs.csv` | 10 |
 | `segments/switch_tables/switch_tables_studio_mobi_competitor/jobs.csv` | 14 |
+| `segments/unmanned/kochkin_unmanned/jobs.csv` | 11 |
 | `segments/unmanned/speaker_a_unmanned/jobs.csv` | 5 |
 | `segments/unmanned/speaker_a_unmanned_full/jobs.csv` | 8 |
 | `jobs_sources/jobs_and_pains/jobs.csv` | 29 |
@@ -42,10 +44,7 @@
 | `Knowledge/Interviews/sales_calls_1c_switch/03_kids_studio_judo_taekwondo.md` | 12 |
 | `Knowledge/Interviews/sales_calls_1c_switch/04_anastasia_zavyalovo_micro_studio.md` | 12 |
 | `Knowledge/Interviews/sales_calls_1c_switch/05_marina_self_written_1c.md` | 11 |
-| `Knowledge/Interviews/Network/UrbanFit/urbanfit_jtbd.md` | 1 |
 | `Knowledge/Interviews/Network/UrbanFit_Network_Analysis.md` | 1 |
-| `Knowledge/Interviews/Unmanned/Kochkin_Unmanned_Analysis.md` | 1 |
-| `Knowledge/Interviews/Unmanned/SpeakerA_Unmanned_Analysis.md` | 1 |
 | `Knowledge/Interviews/sales_calls_1c_switch/JTBD_summary_1c_segment.md` | 1 |
 
 ## Сводка по сегментам
@@ -58,19 +57,20 @@
 | S1 | J3 | 11 |
 | S1 | J5 | 12 |
 | S2 | J2 | 66 |
-| S3 | J4 | 26 |
+| S3 | J4 | 38 |
 | S4 | J4 | 17 |
-| S5 | J1 | 27 |
+| S5 | J1 | 25 |
+| S5 | J3 | 11 |
 | S6 | J4 | 10 |
 
 ## Сводка по размеру
 
 | Размер | Кол-во |
 |---|---|
-| (не определён) | 5 |
-| Big | 34 |
-| Middle | 111 |
-| Small | 159 |
+| (не определён) | 2 |
+| Big | 36 |
+| Middle | 122 |
+| Small | 170 |
 
 ## Записи требующие внимания
 
@@ -78,8 +78,8 @@
 
 ## ⚠️ Дубликаты
 
-**Всего записей:** 309
-**Канонических (после дедупликации):** 204
+**Всего записей:** 330
+**Канонических (после дедупликации):** 225
 **Дубликатов:** 105
 
 **Кластеров дубликатов:** 25
