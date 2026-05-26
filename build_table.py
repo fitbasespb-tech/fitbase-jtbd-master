@@ -50,6 +50,8 @@ SEGMENT_HINTS = {
     "switch_tables/switch_tables_lime_fitness": {"S": "S1", "J": "J1", "label": "Lime Fitness — хореография"},
     "switch_tables/switch_tables_studio_mobi_competitor": {"S": "S1", "J": "J1", "label": "Танцевальная студия — Mobi-конкурент"},
     "unmanned/speaker_a_unmanned": {"S": "S5", "J": "J1", "label": "Speaker A — зал без персонала"},
+    "unmanned/speaker_a_unmanned_full": {"S": "S5", "J": "J1", "label": "Speaker A — зал без персонала (расширенный, 8 джобов)"},
+    "network/stretch_house_stas": {"S": "S4", "J": "J4", "label": "Стас — Stretch House (франшиза, 65 студий)"},
 }
 
 # Финальный порядок: Размер → Сегмент → Хочу (название) → контекст и далее.

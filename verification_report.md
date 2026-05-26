@@ -1,6 +1,6 @@
 # Отчёт верификации сборки таблицы джобов
 
-**Итого джобов в финальной таблице:** 284
+**Итого джобов в финальной таблице:** 309
 
 ## Источники
 
@@ -11,6 +11,7 @@
 | `segments/network/dmitry_network_jtbd/jobs.csv` | 8 |
 | `segments/network/dmitry_network_no_admins/jobs.csv` | 8 |
 | `segments/network/dmitry_network_transcript/jobs.csv` | 8 |
+| `segments/network/stretch_house_stas/jobs.csv` | 17 |
 | `segments/opening/opening_studio/jobs.csv` | 11 |
 | `segments/switch_other_systems/oksana_two_studios_appevent/jobs.csv` | 9 |
 | `segments/switch_other_systems/switch_club_from_1c/jobs.csv` | 9 |
@@ -27,6 +28,7 @@
 | `segments/switch_tables/switch_tables_lime_fitness/jobs.csv` | 10 |
 | `segments/switch_tables/switch_tables_studio_mobi_competitor/jobs.csv` | 14 |
 | `segments/unmanned/speaker_a_unmanned/jobs.csv` | 5 |
+| `segments/unmanned/speaker_a_unmanned_full/jobs.csv` | 8 |
 | `jobs_sources/jobs_and_pains/jobs.csv` | 29 |
 
 ### MD JTBD (Knowledge/Interviews)
@@ -57,7 +59,8 @@
 | S1 | J5 | 12 |
 | S2 | J2 | 66 |
 | S3 | J4 | 26 |
-| S5 | J1 | 19 |
+| S4 | J4 | 17 |
+| S5 | J1 | 27 |
 | S6 | J4 | 10 |
 
 ## Сводка по размеру
@@ -65,9 +68,9 @@
 | Размер | Кол-во |
 |---|---|
 | (не определён) | 5 |
-| Big | 32 |
-| Middle | 103 |
-| Small | 144 |
+| Big | 34 |
+| Middle | 111 |
+| Small | 159 |
 
 ## Записи требующие внимания
 
@@ -75,8 +78,8 @@
 
 ## ⚠️ Дубликаты
 
-**Всего записей:** 284
-**Канонических (после дедупликации):** 179
+**Всего записей:** 309
+**Канонических (после дедупликации):** 204
 **Дубликатов:** 105
 
 **Кластеров дубликатов:** 25
