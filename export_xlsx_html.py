@@ -92,6 +92,11 @@ for c, key in enumerate(cols, 1):
     cell.border = border
 
 # Данные
+def clean_br(v):
+    return (str(v or "")
+            .replace("<br>", "\n").replace("<BR>", "\n")
+            .replace("<br/>", "\n").replace("<br />", "\n"))
+
 for r_idx, rec in enumerate(rows, 2):
     size = rec.get("job_size", "")
     row_fill = None
@@ -102,7 +107,7 @@ for r_idx, rec in enumerate(rows, 2):
     elif size == "Small":
         row_fill = small_fill
     for c, key in enumerate(cols, 1):
-        cell = ws.cell(row=r_idx, column=c, value=rec.get(key, ""))
+        cell = ws.cell(row=r_idx, column=c, value=clean_br(rec.get(key, "")))
         cell.border = border
         cell.alignment = cell_align
         if row_fill:
@@ -114,7 +119,7 @@ widths = {
     "context_when": 50, "want_result": 50, "so_that": 50,
     "importance": 14, "satisfaction": 16, "gap": 8, "fitbase_value": 40,
     "previous_solution_problems": 40, "drivers": 30, "barriers": 30, "lpr_quote": 50,
-    "interview_label": 32, "business_profile": 32, "lpr_profile": 32, "notes": 30,
+    "interview_label": 32, "business_profile": 65, "lpr_profile": 50, "notes": 30,
     "id": 8,
 }
 for c, key in enumerate(cols, 1):
@@ -205,8 +210,13 @@ for r in rows:
 
 def esc(s):
     if not s: return ""
-    return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-                  .replace('"', "&quot;"))
+    # Сначала нормализуем литералы <br> в реальные переносы строк
+    s = str(s).replace("<br>", "\n").replace("<BR>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
+    s = (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+           .replace('"', "&quot;"))
+    # И превращаем переносы в реальные <br> в HTML
+    s = s.replace("\n", "<br>")
+    return s
 
 table_rows = []
 for cls, r in html_rows:
@@ -233,6 +243,10 @@ h1 {{ font-size: 22px; margin-bottom: 4px; }}
 table.dataTable {{ font-size: 12px; background: #fff; }}
 table.dataTable thead th {{ background: #2f4858; color: #fff; padding: 10px 8px; }}
 table.dataTable tbody td {{ padding: 8px 6px; vertical-align: top; max-width: 320px; }}
+table.dataTable tbody td:nth-child({cols.index('business_profile')+1}),
+table.dataTable thead th:nth-child({cols.index('business_profile')+1}) {{ min-width: 640px; max-width: 640px; }}
+table.dataTable tbody td:nth-child({cols.index('lpr_profile')+1}),
+table.dataTable thead th:nth-child({cols.index('lpr_profile')+1}) {{ min-width: 420px; max-width: 420px; }}
 tr.row-big td {{ background: #e8f8e8; }}
 tr.row-middle td {{ background: #fffae5; }}
 tr.row-small td {{ background: #f5f5f9; }}
