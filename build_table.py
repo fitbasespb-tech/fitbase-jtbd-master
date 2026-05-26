@@ -52,12 +52,12 @@ SEGMENT_HINTS = {
     "unmanned/speaker_a_unmanned": {"S": "S5", "J": "J1", "label": "Speaker A — зал без персонала"},
 }
 
-# Новый порядок: Размер → Сегмент → Хочу (название джоба) → остальное.
-# source_file/source_type убраны из вывода по запросу.
+# Финальный порядок: Размер → Сегмент → Хочу (название) → контекст и далее.
+# Дубликаты НЕ попадают в публичный вывод — оставляем только canonical.
 TARGET_COLUMNS = [
     "job_size",                    # 1. Размер
-    "business_segment",             # 2. S
-    "job_segment",                  # 3. J
+    "business_segment",             # 2. Бизнес-сегмент S1–S6
+    "job_segment",                  # 3. Джоб-сегмент J1–J6
     "want_short",                   # 4. Название джоба / Хочу кратко
     "context_when",                 # 5. Когда (контекст, триггер)
     "want_result",                  # 6. Хочу получить
@@ -74,13 +74,11 @@ TARGET_COLUMNS = [
     "business_profile",             # 17. Профиль бизнеса
     "lpr_profile",                  # 18. Профиль ЛПР
     "notes",                        # 19. Заметки
-    "duplicate_group",              # 20. Кластер дубликатов
-    "is_canonical",                 # 21. Канон 1/0
-    "id",                           # 22. ID строки
+    "id",                           # 20. ID строки
 ]
 
-# Внутренние поля, которые парсеры заполняют, но в финальный вывод НЕ попадают
-INTERNAL_FIELDS = ["source_file", "source_type"]
+# Внутренние поля (используются для группировки дубликатов, в вывод не попадают)
+INTERNAL_FIELDS = ["source_file", "source_type", "duplicate_group", "is_canonical"]
 
 
 def normalize_size(s):
@@ -638,17 +636,14 @@ def main():
     for i, r in enumerate(all_records, 1):
         r["id"] = f"J{i:03d}"
 
-    # Save CSV (raw, со всеми дублями). extrasaction='ignore' — отбрасывает source_file/source_type из вывода.
+    # Только канонические записи — дубликаты в публичный вывод не попадают
+    canonical_records = [r for r in all_records if r.get("is_canonical") == "1"]
+    # Перенумеровываем ID после удаления дубликатов
+    for i, r in enumerate(canonical_records, 1):
+        r["id"] = f"J{i:03d}"
+
     out_csv = OUT / "jobs_master.csv"
     with open(out_csv, "w", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=TARGET_COLUMNS, extrasaction="ignore")
-        writer.writeheader()
-        writer.writerows(all_records)
-
-    # Save CSV (deduplicated)
-    out_csv_dedup = OUT / "jobs_master_deduplicated.csv"
-    canonical_records = [r for r in all_records if r.get("is_canonical") == "1"]
-    with open(out_csv_dedup, "w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=TARGET_COLUMNS, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(canonical_records)
@@ -719,12 +714,10 @@ def main():
         f.write("(Дмитрий и Анна/танцы соответственно). Используйте `jobs_master_deduplicated.csv`\n")
         f.write("для уникальных джобов или фильтруйте `is_canonical=1` в основном файле.\n")
 
-    print(f"\n✅ CSV (raw): {out_csv}")
-    print(f"✅ CSV (deduplicated): {out_csv_dedup}")
+    print(f"\n✅ CSV: {out_csv}")
     print(f"✅ Отчёт: {report}")
-    print(f"📊 Итого джобов (raw): {len(all_records)}")
-    print(f"📊 Итого джобов (canonical): {len(canonical_records)}")
-    return all_records
+    print(f"📊 Итого джобов: {len(canonical_records)} (дубликаты исключены)")
+    return canonical_records
 
 
 if __name__ == "__main__":

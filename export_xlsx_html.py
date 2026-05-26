@@ -64,8 +64,6 @@ HEADERS_RU = {
     "business_profile": "Профиль бизнеса",
     "lpr_profile": "Профиль ЛПР",
     "notes": "Заметки",
-    "duplicate_group": "Кластер дубликатов",
-    "is_canonical": "Канон",
     "id": "ID",
 }
 
@@ -83,7 +81,6 @@ header_font = Font(bold=True, color="FFFFFF", size=11)
 big_fill = PatternFill("solid", fgColor="D5F0D5")     # светло-зелёный
 middle_fill = PatternFill("solid", fgColor="FFF4D5")  # светло-жёлтый
 small_fill = PatternFill("solid", fgColor="F0F0F5")   # светло-серый
-dup_fill = PatternFill("solid", fgColor="F0D5D5")     # светло-розовый — дубликат
 cell_align = Alignment(wrap_text=True, vertical="top")
 
 # Заголовок
@@ -96,12 +93,9 @@ for c, key in enumerate(cols, 1):
 
 # Данные
 for r_idx, rec in enumerate(rows, 2):
-    is_canon = rec.get("is_canonical") == "1"
     size = rec.get("job_size", "")
     row_fill = None
-    if not is_canon:
-        row_fill = dup_fill
-    elif size == "Big":
+    if size == "Big":
         row_fill = big_fill
     elif size == "Middle":
         row_fill = middle_fill
@@ -121,7 +115,7 @@ widths = {
     "importance": 14, "satisfaction": 16, "gap": 8, "fitbase_value": 40,
     "previous_solution_problems": 40, "drivers": 30, "barriers": 30, "lpr_quote": 50,
     "interview_label": 32, "business_profile": 32, "lpr_profile": 32, "notes": 30,
-    "duplicate_group": 14, "is_canonical": 9, "id": 8,
+    "id": 8,
 }
 for c, key in enumerate(cols, 1):
     ws.column_dimensions[get_column_letter(c)].width = widths.get(key, 20)
@@ -130,36 +124,13 @@ for c, key in enumerate(cols, 1):
 ws.freeze_panes = "B2"
 ws.auto_filter.ref = f"A1:{get_column_letter(len(cols))}{len(rows)+1}"
 
-# Вторая вкладка — только canonical
-ws2 = wb.create_sheet("Джобы (дедуп)")
-canonical_rows = [r for r in rows if r.get("is_canonical") == "1"]
-for c, key in enumerate(cols, 1):
-    cell = ws2.cell(row=1, column=c, value=HEADERS_RU.get(key, key))
-    cell.fill = header_fill
-    cell.font = header_font
-    cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-    cell.border = border
-for r_idx, rec in enumerate(canonical_rows, 2):
-    size = rec.get("job_size", "")
-    row_fill = None
-    if size == "Big": row_fill = big_fill
-    elif size == "Middle": row_fill = middle_fill
-    elif size == "Small": row_fill = small_fill
-    for c, key in enumerate(cols, 1):
-        cell = ws2.cell(row=r_idx, column=c, value=rec.get(key, ""))
-        cell.border = border
-        cell.alignment = cell_align
-        if row_fill:
-            cell.fill = row_fill
-for c, key in enumerate(cols, 1):
-    ws2.column_dimensions[get_column_letter(c)].width = widths.get(key, 20)
-ws2.freeze_panes = "B2"
-ws2.auto_filter.ref = f"A1:{get_column_letter(len(cols))}{len(canonical_rows)+1}"
-
-# Третья вкладка — README
+# Вкладка README в начале
 ws3 = wb.create_sheet("README", 0)
 notes = [
     ["Таблица джобов Fitbase — единый свод из всех интервью"],
+    [""],
+    [f"Всего уникальных джобов: {len(rows)}"],
+    ["Дубликаты (105 строк из 25 кластеров — итерации одних и тех же интервью в разных папках) удалены."],
     [""],
     ["Источники:"],
     ["1. 19 CSV из Interview_Analysis/segments/ (структурированные данные с привязкой к интервью)"],
@@ -167,25 +138,12 @@ notes = [
     ["3. analysis_catalina_jtbd.md — Каталина (эталонный AJTBD)"],
     ["4. Knowledge/Interviews/Padel/denis_padel_jtbd.md — Денис, падел"],
     ["5. Knowledge/Interviews/sales_calls_1c_switch/*.md — 5 интервью переходов с 1С"],
-    ["6. Narrative MD (UrbanFit, Kochkin) — только ссылки-плейсхолдеры (требуют ручной обработки)"],
-    [""],
-    ["⚠️ ВАЖНО О ДУБЛИКАТАХ:"],
-    ["Найдено 25 кластеров дубликатов (105 строк из 284)."],
-    ["Главные кластеры:"],
-    ["• switch_other_systems/ — 10 файлов с идентичными джобами Анны (танцы). Все 9 джобов × 10 копий = 90 дубликатов."],
-    ["• dmitry_network_* — 3 файла с идентичными 8 джобами. 8 × 2 = 16 дубликатов."],
-    ["Канонические записи: 179. Они на вкладке «Джобы (дедуп)»."],
-    [""],
-    ["Колонки:"],
-    ["• is_canonical = 1 — каноническая запись (уникальная)"],
-    ["• is_canonical = 0 — дубликат (та же работа что в группе duplicate_group)"],
-    ["• duplicate_group = Dxxx — ID группы дубликатов"],
+    ["6. Narrative MD (UrbanFit, Kochkin) — ссылки-плейсхолдеры (требуют ручной обработки)"],
     [""],
     ["Цветовая разметка:"],
     ["• Зелёный фон — Big Job"],
     ["• Жёлтый фон — Middle Job"],
     ["• Серый фон — Small Job"],
-    ["• Розовый фон — дубликат (is_canonical=0)"],
     [""],
     ["Сегменты:"],
     ["• S1=Студии | S2=Клубы одиночки | S3=Сетевые малые | S4=Сетевые крупные | S5=Без персонала | S6=Падел"],
@@ -195,7 +153,7 @@ for r_idx, row in enumerate(notes, 1):
     cell = ws3.cell(row=r_idx, column=1, value=row[0])
     if r_idx == 1:
         cell.font = Font(bold=True, size=14)
-    elif row[0].startswith("⚠️") or row[0].endswith(":"):
+    elif row[0].endswith(":"):
         cell.font = Font(bold=True)
 ws3.column_dimensions["A"].width = 100
 
@@ -231,12 +189,9 @@ def label_segment(code, mapping):
 
 html_rows = []
 for r in rows:
-    is_canon = r.get("is_canonical") == "1"
     size = r.get("job_size", "")
     cls = ""
-    if not is_canon:
-        cls = "row-dup"
-    elif size == "Big":
+    if size == "Big":
         cls = "row-big"
     elif size == "Middle":
         cls = "row-middle"
@@ -281,7 +236,6 @@ table.dataTable tbody td {{ padding: 8px 6px; vertical-align: top; max-width: 32
 tr.row-big td {{ background: #e8f8e8; }}
 tr.row-middle td {{ background: #fffae5; }}
 tr.row-small td {{ background: #f5f5f9; }}
-tr.row-dup td {{ background: #fce8e8; color: #888; }}
 .dataTables_filter input {{ padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; }}
 .summary {{ background: #fff; padding: 14px 18px; border-radius: 8px; margin: 14px 0; font-size: 13px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }}
 .summary b {{ color: #2f4858; }}
@@ -294,17 +248,15 @@ tr.row-dup td {{ background: #fce8e8; color: #888; }}
 <div class="subtitle">Дата сборки: автоматически. Источники: 19 CSV + 7 MD JTBD + 1 агрегированный CSV.</div>
 
 <div class="summary">
-<b>Всего джобов:</b> {len(rows)} строк (raw).<br>
-<b>Уникальных:</b> {sum(1 for c,_ in html_rows if c != 'row-dup')}. <span class="warn">⚠️ {sum(1 for c,_ in html_rows if c == 'row-dup')} дубликатов</span> — итерации одного интервью в разных папках (Анна танцы — 10 копий, Дмитрий — 3 копии).<br>
+<b>Всего уникальных джобов:</b> {len(rows)}.<br>
 <b>Big:</b> {sum(1 for c,_ in html_rows if c == 'row-big')} • <b>Middle:</b> {sum(1 for c,_ in html_rows if c == 'row-middle')} • <b>Small:</b> {sum(1 for c,_ in html_rows if c == 'row-small')}<br>
-<label style="cursor:pointer"><input type="checkbox" id="hideDup" checked> Скрыть дубликаты</label>
+Источники: 19 структурированных интервью + 7 MD JTBD-анализов + 29 агрегированных джобов с УТП.
 </div>
 
 <div class="legend">
 <span class="l-big">Big Job</span>
 <span class="l-middle">Middle Job</span>
 <span class="l-small">Small Job</span>
-<span class="l-dup">Дубликат (не каноническая запись)</span>
 </div>
 
 <details style="background:#fff;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
@@ -349,17 +301,9 @@ $.fn.dataTable.ext.type.order['job-size-pre'] = function(d) {{
   return SIZE_ORDER[d] !== undefined ? SIZE_ORDER[d] : 9;
 }};
 
-// Фильтр «Скрыть дубликаты» через is_canonical
-const CANON_COL = {cols.index('is_canonical')};
-let hideDup = true;
-$.fn.dataTable.ext.search.push(function(settings, data) {{
-  if (!hideDup) return true;
-  return data[CANON_COL] === "1";
-}});
-
 $(function() {{
   $('#jobs thead th').eq({cols.index('job_size')}).attr('data-type', 'job-size');
-  const table = $('#jobs').DataTable({{
+  $('#jobs').DataTable({{
     columnDefs: [{{ type: 'job-size', targets: {cols.index('job_size')} }}],
     pageLength: 50,
     lengthMenu: [25, 50, 100, 250, -1],
@@ -374,11 +318,6 @@ $(function() {{
     fixedHeader: true,
     scrollX: true,
     deferRender: true,
-  }});
-
-  $('#hideDup').on('change', function() {{
-    hideDup = this.checked;
-    table.draw();
   }});
 }});
 </script>
